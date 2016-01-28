@@ -19,7 +19,7 @@ HERE: Horizontal Events Representation Engine.
 It depends of jquery (I'm a big fan).
 
 
-![here demo](http://postimg.org/image/c1382hdr3/)
+![here demo](http://s19.postimg.org/hci4n6ztv/Capture_d_e_cran_2016_01_28_a_13_09_11.png)
 
 
 This is a very basic tool that help you represent events on an horizontal timeline.
