@@ -59,10 +59,6 @@
         function sortNumber(a, b) {
             return b - a;
         }
-        
-        function formatPlotText(offset) {
-            return nbSecondsToHourAndMinute(offset);
-        }
 
 
         function nbSecondsToHourAndMinute(nbSeconds) {
@@ -75,6 +71,10 @@
                 nbMinutes = '0' + nbMinutes;
             }
             return nbHour + ':' + nbMinutes;
+        }
+
+        function formatPlotText(offset) {
+            return nbSecondsToHourAndMinute(offset);
         }
 
 
@@ -105,20 +105,16 @@
             };
 
             hereInstance.zoomOut = function () {
-                var prev = false;
+                var next = false;
                 var plotUnit = currentPlotUnit;
-                for (var i in plotUnits) {
-                    if (true === prev) {
-                        if (i > 1) {
-                            plotUnit = plotUnits[i - 2];
-                        }
-                        else {
-                            plotUnit = plotUnits[0];
-                        }
+                var m = plotUnits.length - 1;
+                for (var i = m; i >= 0; i--) {
+                    if (true === next) {
+                        plotUnit = plotUnits[i];
                         break;
                     }
                     else if (currentPlotUnit === plotUnits[i]) {
-                        prev = true;
+                        next = true;
                     }
                 }
                 if (currentPlotUnit !== plotUnit) {

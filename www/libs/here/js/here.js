@@ -98,7 +98,7 @@
         /**
          * some first class citizens vars inside this plugin
          */
-        var ratio, jEvents, jOuterContainer;
+        var ratio, jEvents, jOuterContainer, currentOffset;
         var timePlotter = null;
 
 
@@ -108,8 +108,6 @@
             plugin.settings = $.extend({}, defaults, options);
             ratio = plugin.settings.ratio;
             jEvents = plugin.settings.jEvents;
-
-
 
 
             // resolving some default values
@@ -122,9 +120,8 @@
                 timePlotter = plugin.settings.timePlotPlugin;
                 timePlotter.init(plugin);
             }
-            
-            
-            $el.css({left: '-' + secondsToPixels(plugin.settings.startAt) + 'px'});
+
+            currentOffset = plugin.settings.startAt;
             refresh();
         };
 
@@ -134,6 +131,7 @@
          * origin of the timeline.
          */
         plugin.moveTo = function (offset) {
+            currentOffset = offset;
             $el.animate({
                 left: '-' + secondsToPixels(offset) + 'px'
             }, plugin.settings.moveToAnimationDuration);
@@ -157,13 +155,16 @@
         };
 
 
-        var secondsToPixels = function (nbSeconds) {
+        function secondsToPixels(nbSeconds) {
             return parseInt(nbSeconds) * ratio;
-        };
+        }
 
 
-        var refresh = function () {
-
+        function refresh() {
+            
+            reposition(currentOffset);
+            
+            
             var jParent = null;
             var z = 0;
             // refresh events
@@ -193,12 +194,16 @@
             if (null !== timePlotter) {
                 timePlotter.refresh(ratio);
             }
-        };
+        }
+        
+        function reposition(offset){
+            $el.css({left: '-' + secondsToPixels(offset) + 'px'});
+        }
+        
 
         plugin.init();
 
     };
-
 
 
     $.fn[pluginName] = function (options) {
