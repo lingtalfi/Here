@@ -18,6 +18,8 @@ HERE: Horizontal Events Representation Engine.
 
 It depends of jquery (I'm a big fan).
 
+It is designed to work with chrome or firefox (I don't care about other browsers).
+
 
 ![here demo](http://s19.postimg.org/hci4n6ztv/Capture_d_e_cran_2016_01_28_a_13_09_11.png)
 
