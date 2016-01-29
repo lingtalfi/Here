@@ -579,7 +579,7 @@ $('#nav_next').on('click', function () {
 
 History Log
 ------------------
-    
+        
 - 1.1.0 -- 2016-01-29
 
     - add nav helper

@@ -128,7 +128,7 @@
 
         /**
          * Scrolls the timeline to another point in time.
-         * 
+         *
          * Offset is the number of seconds since the
          * origin of the timeline.
          */
@@ -141,7 +141,7 @@
 
         /**
          * Changes the zoom level of the timeline.
-         * 
+         *
          * This method basically just assign a new ratio.
          * The ratio is the number of pixels that you use to represent a second.
          */
@@ -153,7 +153,7 @@
 
         /**
          * Set the ratio.
-         * 
+         *
          * This is low level method (used by plugins).
          */
         plugin.setRatio = function (newRatio) {
@@ -162,7 +162,7 @@
 
         /**
          * Get the current ratio.
-         * 
+         *
          * This is low level method (used by plugins).
          */
         plugin.getRatio = function () {
@@ -170,17 +170,17 @@
         };
 
         /**
-         * Return the current offset: the current position of the timeline, 
+         * Return the current offset: the current position of the timeline,
          * in seconds, and relatively to the timeline origin.
          */
-        plugin.getCurrentOffset = function(){
+        plugin.getCurrentOffset = function () {
             return currentOffset;
         };
-        
+
         /**
          * Return the whole timeline duration, in seconds.
          */
-        plugin.getTimelineDuration = function(){
+        plugin.getTimelineDuration = function () {
             return plugin.settings.timelineDuration;
         };
 
@@ -191,12 +191,15 @@
 
 
         function refresh() {
-            
+
             reposition(currentOffset);
-            
-            
+
+
             var jParent = null;
             var z = 0;
+            var innerContainerWidth = secondsToPixels(plugin.settings.timelineDuration);
+
+
             // refresh events
             jEvents.each(function () {
                 var data = $(this).data();
@@ -209,15 +212,11 @@
                     "z-index": z++
                 });
                 plugin.settings.onEventRefreshedAfter($(this), theWidth, data);
-                if (null === jParent) {
-                    jParent = $(this).parent(); // assuming there is only one parent for all events
-                }
+                
+                jParent = $(this).parent(); // there might be multiple timelines (stacked timelines for a tv program for instance)
+                // resize the inner container's width
+                jParent.width(innerContainerWidth);
             });
-
-
-            // resize the inner container's width
-            var innerContainerWidth = secondsToPixels(plugin.settings.timelineDuration);
-            jParent.width(innerContainerWidth);
 
 
             // refresh plots
@@ -225,11 +224,11 @@
                 timePlotter.refresh(ratio);
             }
         }
-        
-        function reposition(offset){
+
+        function reposition(offset) {
             $el.css({left: '-' + secondsToPixels(offset) + 'px'});
         }
-        
+
 
         plugin.init();
 
