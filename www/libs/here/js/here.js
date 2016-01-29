@@ -127,6 +127,8 @@
 
 
         /**
+         * Scrolls the timeline to another point in time.
+         * 
          * Offset is the number of seconds since the
          * origin of the timeline.
          */
@@ -138,6 +140,8 @@
         };
 
         /**
+         * Changes the zoom level of the timeline.
+         * 
          * This method basically just assign a new ratio.
          * The ratio is the number of pixels that you use to represent a second.
          */
@@ -147,11 +151,37 @@
         };
 
 
+        /**
+         * Set the ratio.
+         * 
+         * This is low level method (used by plugins).
+         */
         plugin.setRatio = function (newRatio) {
             ratio = newRatio;
         };
+
+        /**
+         * Get the current ratio.
+         * 
+         * This is low level method (used by plugins).
+         */
         plugin.getRatio = function () {
             return ratio;
+        };
+
+        /**
+         * Return the current offset: the current position of the timeline, 
+         * in seconds, and relatively to the timeline origin.
+         */
+        plugin.getCurrentOffset = function(){
+            return currentOffset;
+        };
+        
+        /**
+         * Return the whole timeline duration, in seconds.
+         */
+        plugin.getTimelineDuration = function(){
+            return plugin.settings.timelineDuration;
         };
 
 

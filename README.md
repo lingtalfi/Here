@@ -520,9 +520,69 @@ that is used, but we've simply wrapped it with some business logic.
 
 
 
+here nav helper
+-------------------
+
+
+Here nav helper is a little helper for the "here" plugin that allows you to scroll to the next/prev timeline page.
+
+A timeline page is the current timeline as you see it in the current viewport.
+
+
+### How to use?
+
+Make sure that you include the helper code in your html page.
+
+```html
+<script src="/libs/here/js/nav/nav.helper.js"></script>
+```
+
+Then create two buttons.
+
+```html
+<button id="nav_prev">prev</button>
+<button id="nav_next">next</button>
+```
+
+
+Now you can call the helper.
+Note that it needs the here instance and the jquery handle for the timeline outer container.
+
+```js
+
+// ... your here plugin code...
+
+var jTimelineInner = $('#timeline');
+var oHere = jHere.data('here');
+
+
+var oNav = new hereNav({
+    jTimelineOuter: jTimelineOuter,
+    oHere: oHere
+});
+
+$('#nav_prev').on('click', function () {
+    oNav.gotoPrevPage();
+    return false;
+});
+$('#nav_next').on('click', function () {
+    oNav.gotoNextPage();
+    return false;
+});
+
+
+```
+
+
+
+
 
 History Log
 ------------------
+    
+- 1.1.0 -- 2016-01-29
+
+    - add nav helper
     
 - 1.0.0 -- 2016-01-28
 
