@@ -166,7 +166,7 @@ Here is the content of the demo file (demo/here.demo.html).
 
 
             var jHere = jTimeLineInner.here({
-                jEvents: $(".timeline_events > div", jHereContainer),
+                eventsSelector: "#here_container .timeline_events > div",
                 timePlotPlugin: new constantDistance({
                     jPlotContainer: jPlotContainer,
                     minimumDistance: 200
@@ -227,7 +227,7 @@ Here options
 ---------------
 ```js
 {
-   //------------------------------------------------------------------------------/
+    //------------------------------------------------------------------------------/
     // REQUIRED
     //------------------------------------------------------------------------------/
     /**
@@ -243,7 +243,7 @@ Here options
      *
      *
      */
-    jEvents: null,
+    eventsSelector: null,
     //------------------------------------------------------------------------------/
     // OPTIONAL
     //------------------------------------------------------------------------------/
@@ -277,7 +277,9 @@ Here options
      * How many pixels to represent 1 second.
      * This is a number (it can be decimal, or just int), it can be bigger,
      * equals to or lower than 1,
-     * but it must be strictly bigjPlotContainerger than 0.
+     * but it must be strictly bigger than 0.
+     * 
+     * Note that this number might be overridden by some plugins.
      */
     ratio: 1,
     /**
@@ -292,6 +294,11 @@ Here options
     timelineDuration: 86400,
     /**
      * Callback fired after that an event is refreshed.
+     * An event is refreshed when its size or position needs to be updated.
+     * Typically, this occur when the user zooms in/out the timeline, in other words, when the ratio is updated.
+     * Scrolling the timeline does not require events refreshing.
+     * 
+     * 
      * Use this to set a background color dynamically, using a custom data-color attribute for instance,
      * or to hide/show some elements depending on the new width, or...
      *
@@ -305,11 +312,107 @@ Here options
     onEventRefreshedAfter: function (jHandle, newWidth, data) {
     },
     /**
-     * Where do you want to start with, in seconds, and from the timeline's origin
+     * Use this number to move the timeline to an arbitrary position before it is displayed.
+     * This is an int representing a number of seconds from the timeline's origin (time line left most point)
      */
-    startAt: 0    
+    startAt: 0
 }
 ```
+
+Here methods
+----------------
+
+### init
+
+```js
+/**
+ * prepare the plugin and build the events
+ */
+function ()
+```
+
+
+### moveTo
+```js
+/**
+ * Scrolls the timeline to another point in time.
+ *
+ * Offset is the number of seconds since the
+ * origin of the timeline.
+ */
+function (offset)
+```
+
+### zoom
+```js
+/**
+ * Changes the zoom level of the timeline.
+ *
+ * This method basically just assign a new ratio.
+ * The ratio is the number of pixels that you use to represent a second.
+ */
+function (newRatio)
+```
+
+### setRatio
+```js
+/**
+ * Set the ratio.
+ *
+ * This is low level method (used by plugins).
+ */
+function (newRatio)
+```
+
+### getRatio
+```js
+/**
+ * Get the current ratio.
+ *
+ * This is low level method (used by plugins).
+ */
+function ()
+```
+
+### getCurrentOffset
+```js
+/**
+ * Return the current offset: the current position of the timeline,
+ * in seconds, and relatively to the timeline origin.
+ */
+function () 
+```
+
+### getTimelineDuration
+```js
+/**
+ * Return the whole timeline duration, in seconds.
+ */
+function ()
+```
+
+### refresh
+```js
+/**
+ * Refresh the timeline.
+ * 
+ * You might want to use this method after injecting events to the timeline with an ajax call for instance.
+ * 
+ * You shouldn't use the force parameter, but if you need it to:
+ * the force parameter will refresh every events targeted by the eventsSelector.
+ * By default, this plugin marks the events that it builds, so that it can avoid re-building them every time.
+ * 
+ * This behaviour is only used in cases where the ratio doesn't change, and you have already built events
+ * in the timeline.
+ * A concrete case for this is when you use an infinite scroll plugin, every time the user scrolls down,
+ * the new page of events should be rebuilt, but the existing events don't need to. 
+ * 
+ */
+function(force)
+```
+
+
+
 
 
 ConstantDistance Timeplotter options 
@@ -455,6 +558,11 @@ So far, I'm using only one time plot plugin, but it fits my needs.
 I called it the ConstantDistance time plot plugin.
 
 
+More conception notes in the next directory.
+
+
+
+
 constant distance time plot plugin
 -------------------------------------
  
@@ -580,6 +688,10 @@ $('#nav_next').on('click', function () {
 History Log
 ------------------
         
+- 2.0.0 -- 2016-01-30
+
+    - replace options.jEvents with options.eventsSelector
+    
 - 1.1.0 -- 2016-01-29
 
     - add nav helper
