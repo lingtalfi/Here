@@ -50,7 +50,6 @@
              * - refresh ( ratio )
              *          render the time plots according to the given ratio
              *
-             *
              */
             timePlotPlugin: null,
             /**
@@ -58,7 +57,7 @@
              * This is a number (it can be decimal, or just int), it can be bigger,
              * equals to or lower than 1,
              * but it must be strictly bigger than 0.
-             * 
+             *
              * Note that this number might be overridden by some plugins.
              */
             ratio: 1,
@@ -77,8 +76,8 @@
              * An event is refreshed when its size or position needs to be updated.
              * Typically, this occur when the user zooms in/out the timeline, in other words, when the ratio is updated.
              * Scrolling the timeline does not require events refreshing.
-             * 
-             * 
+             *
+             *
              * Use this to set a background color dynamically, using a custom data-color attribute for instance,
              * or to hide/show some elements depending on the new width, or...
              *
@@ -90,6 +89,20 @@
              *
              */
             onEventRefreshedAfter: function (jHandle, newWidth, data) {
+            },
+            /**
+             * - onMoveBefore ( jElements )
+             *          callback fired just before the time line is moved horizontally.
+             *          It returns the set of elements to be moved.
+             *
+             *          The jElements parameter is a set of the jquery element(s) that are being
+             *          moved.
+             *          You can for instance add a new jquery element to this set, so that its movement
+             *          is synchronized with the timeline's movement.
+             *          To do so, you might be interested by the jquery.add method.
+             */
+            onMoveBefore: function (jElements) {
+                return jElements;
             },
             /**
              * Use this number to move the timeline to an arbitrary position before it is displayed.
@@ -110,9 +123,6 @@
         var timePlotter = null;
 
 
-        /**
-         * prepare the plugin and build the events
-         */
         plugin.init = function () {
 
 
@@ -145,7 +155,9 @@
          */
         plugin.moveTo = function (offset) {
             currentOffset = offset;
-            $el.animate({
+            var sel = $el;
+            sel = plugin.settings.onMoveBefore(sel);
+            sel.animate({
                 left: '-' + secondsToPixels(offset) + 'px'
             }, plugin.settings.moveToAnimationDuration);
         };
@@ -197,25 +209,23 @@
 
         /**
          * Refresh the timeline.
-         * 
+         *
          * You might want to use this method after injecting events to the timeline with an ajax call for instance.
-         * 
+         *
          * You shouldn't use the force parameter, but if you need it to:
          * the force parameter will refresh every events targeted by the eventsSelector.
          * By default, this plugin marks the events that it builds, so that it can avoid re-building them every time.
-         * 
+         *
          * This behaviour is only used in cases where the ratio doesn't change, and you have already built events
          * in the timeline.
          * A concrete case for this is when you use an infinite scroll plugin, every time the user scrolls down,
-         * the new page of events should be rebuilt, but the existing events don't need to. 
-         * 
+         * the new page of events should be rebuilt, but the existing events don't need to.
+         *
          */
-        plugin.refresh = function(force){
+        plugin.refresh = function (force) {
             refresh(force);
         };
 
-        
-        
 
         function secondsToPixels(nbSeconds) {
             return parseInt(nbSeconds) * ratio;
@@ -228,15 +238,13 @@
 
 
             var jParent = null;
-            var z = 0;
             var innerContainerWidth = secondsToPixels(plugin.settings.timelineDuration);
 
-            
+
             var jEvents = $(eventsSelector);
-            if('undefined' === typeof force){
-                jEvents.not(".built");
+            if ('undefined' === typeof force) {
+                jEvents = jEvents.not(".built");
             }
-            
 
             // refresh events
             jEvents.each(function () {
@@ -246,15 +254,14 @@
                 var theWidth = parseInt(parseInt(duration) * ratio);
                 $(this).width(theWidth);
                 $(this).css({
-                    left: secondsToPixels(offset) + 'px',
-                    "z-index": z++
+                    left: secondsToPixels(offset) + 'px'
                 });
                 plugin.settings.onEventRefreshedAfter($(this), theWidth, data);
-                
+
                 jParent = $(this).parent(); // there might be multiple timelines (stacked timelines for a tv program for instance)
                 // resize the inner container's width
                 jParent.width(innerContainerWidth);
-                
+
                 $(this).addClass('built'); // mark event to optimize further "light" (non forced) renderings
             });
 
@@ -266,7 +273,9 @@
         }
 
         function repositionTimeline(offset) {
-            $el.css({left: '-' + secondsToPixels(offset) + 'px'});
+            var sel = $el;
+            sel = plugin.settings.onMoveBefore(sel);
+            sel.css({left: '-' + secondsToPixels(offset) + 'px'});
         }
 
 

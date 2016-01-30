@@ -270,7 +270,6 @@ Here options
      * - refresh ( ratio )
      *          render the time plots according to the given ratio
      *
-     *
      */
     timePlotPlugin: null,
     /**
@@ -278,7 +277,7 @@ Here options
      * This is a number (it can be decimal, or just int), it can be bigger,
      * equals to or lower than 1,
      * but it must be strictly bigger than 0.
-     * 
+     *
      * Note that this number might be overridden by some plugins.
      */
     ratio: 1,
@@ -297,8 +296,8 @@ Here options
      * An event is refreshed when its size or position needs to be updated.
      * Typically, this occur when the user zooms in/out the timeline, in other words, when the ratio is updated.
      * Scrolling the timeline does not require events refreshing.
-     * 
-     * 
+     *
+     *
      * Use this to set a background color dynamically, using a custom data-color attribute for instance,
      * or to hide/show some elements depending on the new width, or...
      *
@@ -310,6 +309,20 @@ Here options
      *
      */
     onEventRefreshedAfter: function (jHandle, newWidth, data) {
+    },
+    /**
+     * - onMoveBefore ( jElements )
+     *          callback fired just before the time line is moved horizontally.
+     *          It returns the set of elements to be moved.
+     *
+     *          The jElements parameter is a set of the jquery element(s) that are being
+     *          moved.
+     *          You can for instance add a new jquery element to this set, so that its movement
+     *          is synchronized with the timeline's movement.
+     *          To do so, you might be interested by the jquery.add method.
+     */
+    onMoveBefore: function (jElements) {
+        return jElements;
     },
     /**
      * Use this number to move the timeline to an arbitrary position before it is displayed.
@@ -688,6 +701,10 @@ $('#nav_next').on('click', function () {
 History Log
 ------------------
         
+- 2.1.0 -- 2016-01-31
+
+    - plugin: add onMoveBefore option
+    
 - 2.0.0 -- 2016-01-30
 
     - replace options.jEvents with options.eventsSelector
