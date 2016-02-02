@@ -1,9 +1,6 @@
 (function () {
-
     window.constantDistance = function (options) {
-
         var jContainer, currentPlotUnit, plotUnits, plugin;
-
         var defaults = {
             //------------------------------------------------------------------------------/
             // REQUIRED
@@ -51,16 +48,11 @@
                 return '<span>' + text + ' </span>';
             }
         };
-
         var zis = this;
-
         this.settings = $.extend(defaults, options);
-
         function sortNumber(a, b) {
             return b - a;
         }
-
-
         function nbSecondsToHourAndMinute(nbSeconds) {
             var nbHour = Math.floor(nbSeconds / 3600);
             var nbMinutes = Math.floor((nbSeconds % 3600) / 60);
@@ -72,12 +64,9 @@
             }
             return nbHour + ':' + nbMinutes;
         }
-
         function formatPlotText(offset) {
             return nbSecondsToHourAndMinute(offset);
         }
-
-
         this.init = function (hereInstance) {
             jContainer = this.settings.jPlotContainer;
             plotUnits = this.settings.plotUnits;
@@ -85,7 +74,6 @@
             plugin = hereInstance;
             currentPlotUnit = this.settings.defaultPlotUnit;
             plugin.setRatio(this.settings.minimumDistance / currentPlotUnit);
-
             hereInstance.zoomIn = function () {
                 var next = false;
                 var plotUnit = currentPlotUnit;
@@ -103,7 +91,6 @@
                     plugin.zoom(zis.settings.minimumDistance / plotUnit);
                 }
             };
-
             hereInstance.zoomOut = function () {
                 var next = false;
                 var plotUnit = currentPlotUnit;
@@ -122,13 +109,9 @@
                     plugin.zoom(zis.settings.minimumDistance / plotUnit);
                 }
             };
-
         };
-
-
         this.refresh = function (ratio) {
             var distance = ratio * currentPlotUnit;
-
             jContainer.empty();
             var start = 0;
             var dist = 0;
@@ -141,14 +124,5 @@
                 dist += distance;
             }
         };
-
     };
-
-
 })();
-
-
-
-
-
-

@@ -1,11 +1,6 @@
 (function ($) {
-
-
     var pluginName = "here";
-
-
     $[pluginName] = function (element, options) {
-
         var defaults = {
             //------------------------------------------------------------------------------/
             // REQUIRED
@@ -110,43 +105,30 @@
              */
             startAt: 0
         };
-
         var plugin = this;
-
         plugin.settings = {};
         var $el = $(element);
-
         /**
          * some first class citizens vars inside this plugin
          */
         var ratio, eventsSelector, jOuterContainer, currentOffset;
         var timePlotter = null;
-
-
         plugin.init = function () {
-
-
             plugin.settings = $.extend({}, defaults, options);
             ratio = plugin.settings.ratio;
             eventsSelector = plugin.settings.eventsSelector;
-
-
             // resolving some default values
             if (null === plugin.settings.jOuterContainer) {
                 plugin.settings.jOuterContainer = $el.parent();
             }
             jOuterContainer = plugin.settings.jOuterContainer;
-
             if (null !== plugin.settings.timePlotPlugin) {
                 timePlotter = plugin.settings.timePlotPlugin;
                 timePlotter.init(plugin);
             }
-
             currentOffset = plugin.settings.startAt;
-            refresh(true);
+            refresh();
         };
-
-
         /**
          * Scrolls the timeline to another point in time.
          *
@@ -161,7 +143,6 @@
                 left: '-' + secondsToPixels(offset) + 'px'
             }, plugin.settings.moveToAnimationDuration);
         };
-
         /**
          * Changes the zoom level of the timeline.
          *
@@ -172,8 +153,6 @@
             ratio = newRatio;
             refresh();
         };
-
-
         /**
          * Set the ratio.
          *
@@ -182,7 +161,6 @@
         plugin.setRatio = function (newRatio) {
             ratio = newRatio;
         };
-
         /**
          * Get the current ratio.
          *
@@ -191,7 +169,6 @@
         plugin.getRatio = function () {
             return ratio;
         };
-
         /**
          * Return the current offset: the current position of the timeline,
          * in seconds, and relatively to the timeline origin.
@@ -199,52 +176,46 @@
         plugin.getCurrentOffset = function () {
             return currentOffset;
         };
-
         /**
          * Return the whole timeline duration, in seconds.
          */
         plugin.getTimelineDuration = function () {
             return plugin.settings.timelineDuration;
         };
-
         /**
-         * Refresh the timeline.
+         * - Refresh the timeline's position
+         * - Refresh the timeline's events
          *
-         * You might want to use this method after injecting events to the timeline with an ajax call for instance.
+         *      This method expects that a timeline event is a map containing at least the following properties:
+         *              - duration, int, the number of seconds that an event last
+         *              - offset, int, the number of seconds representing the moment when the event starts
+         *                                  (the interval between the timeline's origin and the event's start time)
          *
-         * You shouldn't use the force parameter, but if you need it to:
-         * the force parameter will refresh every events targeted by the eventsSelector.
-         * By default, this plugin marks the events that it builds, so that it can avoid re-building them every time.
          *
-         * This behaviour is only used in cases where the ratio doesn't change, and you have already built events
-         * in the timeline.
-         * A concrete case for this is when you use an infinite scroll plugin, every time the user scrolls down,
-         * the new page of events should be rebuilt, but the existing events don't need to.
+         *      For each refreshed events, the following are executed:
+         *              - adjusting its width
+         *              - adjusting its left position
+         *              - calling the user's onEventRefreshedAfter callback if defined
          *
          */
-        plugin.refresh = function (force) {
-            refresh(force);
+        plugin.refresh = function () {
+            refresh();
         };
-
-
         function secondsToPixels(nbSeconds) {
             return parseInt(nbSeconds) * ratio;
         }
 
-
-        function refresh(force) {
-
+        /**
+         * see public method comments
+         */
+        function refresh() {
             repositionTimeline(currentOffset);
-
-
             var jParent = null;
             var innerContainerWidth = secondsToPixels(plugin.settings.timelineDuration);
-
-
             var jEvents = $(eventsSelector);
-            if ('undefined' === typeof force) {
-                jEvents = jEvents.not(".built");
-            }
+
+
+            jEvents = jEvents.not(".built");
 
             // refresh events
             jEvents.each(function () {
@@ -257,15 +228,11 @@
                     left: secondsToPixels(offset) + 'px'
                 });
                 plugin.settings.onEventRefreshedAfter($(this), theWidth, data);
-
                 jParent = $(this).parent(); // there might be multiple timelines (stacked timelines for a tv program for instance)
                 // resize the inner container's width
                 jParent.width(innerContainerWidth);
-
                 $(this).addClass('built'); // mark event to optimize further "light" (non forced) renderings
             });
-
-
             // refresh plots
             if (null !== timePlotter) {
                 timePlotter.refresh(ratio);
@@ -278,12 +245,8 @@
             sel.css({left: '-' + secondsToPixels(offset) + 'px'});
         }
 
-
         plugin.init();
-
     };
-
-
     $.fn[pluginName] = function (options) {
         return this.each(function () {
             if (undefined == $(this).data(pluginName)) {
@@ -291,7 +254,5 @@
                 $(this).data(pluginName, plugin);
             }
         });
-
     };
-
 })(jQuery);

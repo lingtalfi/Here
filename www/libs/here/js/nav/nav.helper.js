@@ -21,26 +21,19 @@ function hereNav(options) {
          */
         oHere: null
     }, options);
-
-
     var pageWidth, pageDuration;
     var jTimelineOuter = d.jTimelineOuter;
     var oHere = d.oHere;
-
-
     //------------------------------------------------------------------------------/
     // PRIVATE
     //------------------------------------------------------------------------------/
     function pixelsToSecond(nbPixels, ratio) {
         return parseInt(nbPixels) / ratio;
     }
-
     function getPageDuration() {
         pageWidth = jTimelineOuter.width();
         return pixelsToSecond(pageWidth, oHere.getRatio());
     }
-
-
     //------------------------------------------------------------------------------/
     // PUBLIC
     //------------------------------------------------------------------------------/
@@ -55,7 +48,6 @@ function hereNav(options) {
         if (curOffset - pageDuration >= 0) {
             oHere.moveTo(curOffset - pageDuration);
         }
-
     };
     /**
      * Scoll to the next page

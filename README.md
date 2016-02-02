@@ -571,7 +571,7 @@ So far, I'm using only one time plot plugin, but it fits my needs.
 I called it the ConstantDistance time plot plugin.
 
 
-More conception notes in the next directory.
+More conception notes in the doc directory.
 
 
 
@@ -701,6 +701,10 @@ $('#nav_next').on('click', function () {
 History Log
 ------------------
         
+- 2.2.0 -- 2016-02-02
+
+    - plugin: remove refresh method's force (internal) argument
+    
 - 2.1.0 -- 2016-01-31
 
     - plugin: add onMoveBefore option
