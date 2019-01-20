@@ -31,7 +31,7 @@ It depends of jquery (I'm a big fan).
 It is designed to work with chrome or firefox (I don't care about other browsers).
 
 
-![here demo](http://s19.postimg.org/hci4n6ztv/Capture_d_e_cran_2016_01_28_a_13_09_11.png)
+![here demo](http://lingtalfi.com/img/universe/Here/Capture-d-e-cran-2016-01-28-a-13-09-11.png)
 
 
 This is a very basic tool that help you represent events on an horizontal timeline.
